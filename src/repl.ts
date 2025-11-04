@@ -24,6 +24,7 @@ export function startREPL() {
             rl.prompt();
             return;
         }
-        
+        console.log(`Your command was: ${cleaned[0]}`);
+        rl.prompt();
     });
 }
