@@ -1,73 +1,102 @@
-import { error } from "console";
-
 export class PokeAPI {
-    private static readonly baseURL = "https://pokeapi.co/api/v2";
+  private static readonly baseURL = "https://pokeapi.co/api/v2";
 
-    constructor() {}
+  constructor() {}
 
-    async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
-        const url = pageURL ?? `${PokeAPI.baseURL}/location-area/?limit=20`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-            const result = await response.json();
-            return result as ShallowLocations;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error(error.message);
-                throw error;
-            } else {
-                console.error(String(error));
-                throw new Error("Unknown error fetching locations");
-            }
-        }
+
+  async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
+    const url = pageURL || `${PokeAPI.baseURL}/location-area`;
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        throw new Error(`${resp.status} ${resp.statusText}`);
+      }
+      const locations: ShallowLocations = await resp.json();
+      return locations;
+    } catch (e) {
+      throw new Error(`Error fetching locations: ${(e as Error).message}`);
     }
+  }
 
-    async fetchLocation(locationName: string): Promise<Location> {
-        const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-            const result = await response.json();
-            return {
-                id: result.id,
-                name: result.name,
-                location: {
-                    name: result.location.name,
-                    url: result.location.url,
-                }
-            };
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error(error.message);
-                throw error;
-            } else {
-                console.error(String(error));
-                throw new Error("Unknown error fetching location");
-            }
-        }
+
+  async fetchLocation(locationName: string): Promise<Location> {
+    const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        throw new Error(`${resp.status} ${resp.statusText}`);
+      }
+      const location: Location = await resp.json();
+      return location;
+    } catch (e) {
+      throw new Error(
+        `Error fetching location '${locationName}': ${(e as Error).message}`,
+      );
     }
+  }
 }
 
+
 export type ShallowLocations = {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: {
-        name: string;
-        url: string;
-    }[];
+  count: number;
+  next: string;
+  previous: string;
+  results: {
+    name: string;
+    url: string;
+  }[];
 };
 
+
 export type Location = {
-    id: number;
-    name: string;
-    location: {
+  encounter_method_rates: {
+    encounter_method: {
+      name: string;
+      url: string;
+    };
+    version_details: {
+      rate: number;
+      version: {
         name: string;
         url: string;
+      };
+    }[];
+  }[];
+  game_index: number;
+  id: number;
+  location: {
+    name: string;
+    url: string;
+  };
+  name: string;
+  names: {
+    language: {
+      name: string;
+      url: string;
     };
+    name: string;
+  }[];
+  pokemon_encounters: {
+    pokemon: {
+      name: string;
+      url: string;
+    };
+    version_details: {
+      encounter_details: {
+        chance: number;
+        condition_values: any[];
+        max_level: number;
+        method: {
+          name: string;
+          url: string;
+        };
+        min_level: number;
+      }[];
+      max_chance: number;
+      version: {
+        name: string;
+        url: string;
+      };
+    }[];
+  }[];
 };
