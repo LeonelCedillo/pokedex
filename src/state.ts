@@ -13,8 +13,8 @@ export type State = {
     readline: Interface;
     commands: Record<string, CLICommand>;
     pokeAPI: PokeAPI;
-    nextLocationsURL?: string;
-    prevLocationsURL?: string;
+    nextLocationsURL?: string | null;
+    prevLocationsURL?: string | null;
 };
 
 export function initState(): State {
@@ -27,8 +27,8 @@ export function initState(): State {
         readline: rl,
         commands: getCommands(),
         pokeAPI: new PokeAPI(),
-        nextLocationsURL: undefined,
-        prevLocationsURL: undefined,
+        nextLocationsURL: null,
+        prevLocationsURL: null,
     }
 }
 

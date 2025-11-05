@@ -1,8 +1,8 @@
 import type { State } from "./state.js";
 
-export async function commandMap(state: State) {
+export async function commandMapb(state: State) {
     try {
-        const data = await state.pokeAPI.fetchLocations(state.nextLocationsURL ?? undefined);
+        const data = await state.pokeAPI.fetchLocations(state.prevLocationsURL ?? undefined);
         data.results.forEach((loc) => console.log(loc.name));
         state.nextLocationsURL = data.next;
         state.prevLocationsURL = data.previous;
