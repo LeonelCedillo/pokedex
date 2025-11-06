@@ -12,6 +12,12 @@ export class Cache {
     // Field to hold the interval (in milliseconds) for the timer.
     #interval: number;
 
+    // Get the #startReapLoop started.
+    constructor(interval: number) {
+        this.#interval = interval;
+        this.#startReapLoop();
+    }
+
     // add a new entry to the cache
     add<T>(key: string, val: T): void {
         const entry: CacheEntry<T> = {
@@ -23,5 +29,30 @@ export class Cache {
 
     get<T>(key: string): CacheEntry<T> | undefined {
         return this.#cache.get(key);
+    }
+
+    // Loop through the cache and delete any entries that are older than Date.now() - #interval.
+    #reap(): void {
+        const now = Date.now();
+        for (const [key, entry] of this.#cache.entries()) {
+            if (entry.createdAt < now - this.#interval) {
+                this.#cache.delete(key)
+            }
+        }
+    }
+
+    // Call #reap() every #interval milliseconds and store the interval ID in #reapIntervalID.
+    #startReapLoop(): void {
+        this.#reapIntervalId = setInterval(() => {
+            this.#reap();
+        }, this.#interval);
+    }
+
+    // Stop the reap loop and set #reapIntervalId back to undefined.
+    stopReapLoop(): void {
+        if (this.#reapIntervalId !== undefined) {
+            clearInterval(this.#reapIntervalId);
+            this.#reapIntervalId = undefined;
+        }
     }
 }
