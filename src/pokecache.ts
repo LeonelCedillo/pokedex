@@ -28,7 +28,10 @@ export class Cache {
     }
 
     get<T>(key: string): CacheEntry<T> | undefined {
-        return this.#cache.get(key);
+        // return this.#cache.get(key);
+        const entry = this.#cache.get(key);
+        if (!entry) return undefined;
+        return entry.val; 
     }
 
     // Loop through the cache and delete any entries that are older than Date.now() - #interval.
