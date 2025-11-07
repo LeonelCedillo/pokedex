@@ -7,6 +7,11 @@ export async function commandExplore(state: State, ...args: string[]): Promise<v
         return;
     }
     const location = await state.pokeAPI.fetchLocation(areaName);
-    location.pokemon_encounters.forEach((enc) => console.log(enc["pokemon"]["name"]));
+    console.log(`Exploring ${areaName}...`);
+    console.log("Found Pokemon:");
+    location.pokemon_encounters.forEach((enc) => { 
+        const pokemonName = enc["pokemon"]["name"];
+        console.log(` - ${pokemonName}`)
+    });
 }
 
