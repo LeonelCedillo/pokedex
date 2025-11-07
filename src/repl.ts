@@ -5,12 +5,14 @@ export async function startREPL(state: State) {
 
   state.readline.on("line", async (input) => {
     const words = cleanInput(input);
+    const args = words.slice(1);
+
     if (words.length === 0) {
       state.readline.prompt();
       return;
     }
 
-    const commandName = words[0];
+    const commandName = words[0];    
     const cmd = state.commands[commandName];
     if (!cmd) {
       console.log(
@@ -21,7 +23,7 @@ export async function startREPL(state: State) {
     }
 
     try {
-      await cmd.callback(state);
+      await cmd.callback(state, ...args);
     } catch (e) {
       console.log((e as Error).message);
     }
