@@ -18,5 +18,6 @@ export async function commandCatch(state: State, ...args: string[]): Promise<voi
     } else {
         console.log(`${pokemonName} escaped!`);
     }
+    console.log("");
 }
 
